@@ -165,7 +165,7 @@ typedef enum {
 typedef enum {
     A_arithBiOpExprKind,
     A_exprUnitKind
-} A_arithExprType;
+} A_aithExprrType;
 
 typedef enum {
     A_boolBiOpExprKind,
