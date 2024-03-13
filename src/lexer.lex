@@ -8,8 +8,8 @@ int c;
 int calc(char *s, int len);
 %}
 
-// TODO:
-// your lexer
+/* // TODO:
+// your lexer */
 
 %%
 <INITIAL>"let" { col+=3; return LET; }
@@ -47,21 +47,7 @@ int calc(char *s, int len);
 <INITIAL>")" { ++col; return RPAREN; }
 <INITIAL>"=" { ++col; return ASSIGN; }
 
-// <INITIAL>"void" { col+=4; return VOID; }
-// <INITIAL>"for" { col+=3; return FOR; }
-// <INITIAL>"bool" { col+=4; return BOOL; }
-// <INITIAL>"true" { col+=4; return TRUE; }
-// <INITIAL>"false" { col+=5; return FALSE; }
-// <INITIAL>"main" { col+=4; return MAIN; }
-// <INITIAL>"include" { col+=7; return INCLUDE; }
-// <INITIAL>"define" { col+=6; return DEFINE; }
-// <INITIAL>"elif" { col+=4; return ELIF; }
-// <INITIAL>"^" { ++col; return POWER; }
-// <INITIAL>"%" { ++col; return MOD; }
-// <INITIAL>"&" { ++col; return AND; }
-// <INITIAL>"|" { ++col; return OR; }
-// <INITIAL>"~" { ++col; return NOT; }
-// <INITIAL>. { ++col; return yytext[0]; }
+
 
 <INITIAL>"[" { ++col; return LBRACKET; }
 <INITIAL>"]" { ++col; return RBRACKET; }
@@ -73,9 +59,9 @@ int calc(char *s, int len);
 <INITIAL>";" { ++col; return SEMICOLON; }
 <INITIAL>"->" { col+=2; return ARROW; }
 
-<INITIAL>"#.*" { col+=yyleng; return PREPROCESSOR; }
-<INITIAL>"//.*" { col+=yyleng; return COMMENT; }
-<INITIAL>"/\*.*\*/" { col+=yyleng; return COMMENT; }
+<INITIAL>"#.*" { col+=yyleng;  }
+<INITIAL>"//.*" { col+=yyleng;  }
+<INITIAL>"/\*.*\*/" { col+=yyleng;  }
 
 
 
@@ -95,7 +81,6 @@ int calc(char *s, int len);
     return ID;
 }
 
-// <INITIAL><<EOF>> { return 0; }
 . { printf("Error: Unrecognized character '%c' at line %d, column %d\n", yytext[0], line, col); ++col; }
 %%
 
