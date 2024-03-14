@@ -142,6 +142,30 @@ extern int  yywrap();
 %type <rightValList> RightValList
 
 
+%right ASSIGN
+
+%left AND
+%left OR
+
+
+%left LT
+%left GT
+%left GE
+%left LE
+%left EQ
+%left NE
+
+%left ADD
+%left SUB
+%left MUL
+%left DIV
+// %left UMINUS
+%right NOT
+
+%left DOT
+// %left ARROW
+
+
 %start Program
 
 %%                   /* beginning of rules section */
@@ -416,6 +440,10 @@ VarDeclList: VarDecl COMMA VarDeclList
 {
   $$ = A_VarDeclList($1, nullptr);
 }
+|
+{
+  $$ = nullptr;
+}
 ;
 
 
@@ -511,19 +539,19 @@ CallStmt: FnCall SEMICOLON
 }
 ;
 
-IfStmt: IF LPAREN BoolExpr RPAREN CodeBlockStmtList
+IfStmt: IF LPAREN BoolExpr RPAREN LBRACE CodeBlockStmtList RBRACE
 {
-  $$ = A_IfStmt($1, $3, $5, nullptr);
+  $$ = A_IfStmt($1, $3, $6, nullptr);
 }
-| IF LPAREN BoolExpr RPAREN CodeBlockStmtList ELSE CodeBlockStmtList
+| IF LPAREN BoolExpr RPAREN LBRACE CodeBlockStmtList RBRACE ELSE LBRACE CodeBlockStmtList RBRACE
 {
-  $$ = A_IfStmt($1, $3, $5, $7);
+  $$ = A_IfStmt($1, $3, $6, $10);
 }
 ;
 
-WhileStmt: WHILE LPAREN BoolExpr RPAREN CodeBlockStmtList
+WhileStmt: WHILE LPAREN BoolExpr RPAREN LBRACE CodeBlockStmtList RBRACE
 {
-  $$ = A_WhileStmt($1, $3, $5);
+  $$ = A_WhileStmt($1, $3, $6);
 }
 ;
 
