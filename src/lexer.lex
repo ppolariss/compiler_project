@@ -82,6 +82,7 @@ int calc(char *s, int len);
 <INITIAL>[a-zA-Z_][a-zA-Z0-9_]* {
     yylval.tokenId = A_TokenId(A_Pos(line, col), strdup(yytext));
     col+=yyleng;
+    // printf("ID: %s\n", yytext);
     return ID;
 }
 

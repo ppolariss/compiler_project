@@ -53,6 +53,7 @@ extern int  yywrap();
   A_rightValList rightValList;
   A_tokenId tokenId;
   A_tokenNum tokenNum;
+  A_arithBiOpExpr arithBiOpExpr;
 }
 
 %token <pos> ADD
@@ -141,24 +142,18 @@ extern int  yywrap();
 %type <codeBlockStmtList> CodeBlockStmtList
 %type <rightValList> RightValList
 
+// ArithBiOpExpr
+%type <arithBiOpExpr> ArithBiOpExpr
 
 %right ASSIGN
 
-%left AND
-%left OR
+%left AND OR
 
+%left LT GT GE LE EQ NE
 
-%left LT
-%left GT
-%left GE
-%left LE
-%left EQ
-%left NE
-
-%left ADD
-%left SUB
-%left MUL
-%left DIV
+%left ADD SUB
+// %left SUB
+%left MUL DIV
 // %left UMINUS
 %right NOT
 
@@ -210,21 +205,31 @@ ProgramElement: VarDeclStmt
 ;
 
 
-ArithExpr: ArithExpr ADD ArithExpr
+// ArithExpr: ArithExpr ADD ArithExpr
+// {
+//   $$ = A_ArithBiOp_Expr($1->pos, A_ArithBiOpExpr($1->pos, A_add, $1, $3));
+// }
+// | ArithExpr SUB ArithExpr
+// {
+//   $$ = A_ArithBiOp_Expr($1->pos, A_ArithBiOpExpr($1->pos, A_sub, $1, $3));
+// }
+// | ArithExpr MUL ArithExpr
+// {
+//   $$ = A_ArithBiOp_Expr($1->pos, A_ArithBiOpExpr($1->pos, A_mul, $1, $3));
+// }
+// | ArithExpr DIV ArithExpr
+// {
+//   $$ = A_ArithBiOp_Expr($1->pos, A_ArithBiOpExpr($1->pos, A_div, $1, $3));
+// }
+// | ExprUnit
+// {
+//   $$ = A_ExprUnit($1->pos, $1);
+// }
+// ;
+
+ArithExpr: ArithBiOpExpr
 {
-  $$ = A_ArithBiOp_Expr($1->pos, A_ArithBiOpExpr($1->pos, A_add, $1, $3));
-}
-| ArithExpr SUB ArithExpr
-{
-  $$ = A_ArithBiOp_Expr($1->pos, A_ArithBiOpExpr($1->pos, A_sub, $1, $3));
-}
-| ArithExpr MUL ArithExpr
-{
-  $$ = A_ArithBiOp_Expr($1->pos, A_ArithBiOpExpr($1->pos, A_mul, $1, $3));
-}
-| ArithExpr DIV ArithExpr
-{
-  $$ = A_ArithBiOp_Expr($1->pos, A_ArithBiOpExpr($1->pos, A_div, $1, $3));
+  $$ = A_ArithBiOp_Expr($1->pos, $1);
 }
 | ExprUnit
 {
@@ -232,6 +237,23 @@ ArithExpr: ArithExpr ADD ArithExpr
 }
 ;
 
+ArithBiOpExpr: ArithExpr ADD ArithExpr
+{
+  $$ = A_ArithBiOpExpr($1->pos, A_add, $1, $3);
+}
+| ArithExpr SUB ArithExpr
+{
+  $$ = A_ArithBiOpExpr($1->pos, A_sub, $1, $3);
+}
+| ArithExpr MUL ArithExpr
+{
+  $$ = A_ArithBiOpExpr($1->pos, A_mul, $1, $3);
+}
+| ArithExpr DIV ArithExpr
+{
+  $$ = A_ArithBiOpExpr($1->pos, A_div, $1, $3);
+}
+;
 
 ExprUnit: NUM
 {
@@ -364,6 +386,10 @@ RightValList: RightVal COMMA RightValList
 | RightVal
 {
   $$ = A_RightValList($1, nullptr);
+}
+| 
+{
+  $$ = nullptr;
 }
 ;
 
