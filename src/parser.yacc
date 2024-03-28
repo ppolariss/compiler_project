@@ -147,15 +147,19 @@ extern int  yywrap();
 
 %right ASSIGN
 
-%left AND OR
+%left OR
 
-%left LT GT GE LE EQ NE
+%left AND
+
+%left EQ NE
+
+%left LT GT GE LE
 
 %left ADD SUB
-// %left SUB
+
 %left MUL DIV
-// %left UMINUS
-%right NOT
+
+%right NOT UMINUS
 
 %left DOT
 // %left ARROW
@@ -279,7 +283,7 @@ ExprUnit: NUM
 {
   $$ = A_MemberExprUnit($1->pos, A_MemberExpr($1->pos, $1, $3->id));
 } 
-| SUB ExprUnit
+| SUB ExprUnit %prec UMINUS
 {
   $$ = A_ArithUExprUnit($1, A_ArithUExpr($1, A_neg, $2));
 }
@@ -421,7 +425,6 @@ VarDecl: ID COLON Type
 }
 ;
 
-// unknown
 
 VarDef: ID COLON Type ASSIGN RightVal
 {
@@ -451,7 +454,7 @@ Type: INT
 }
 ;
 
-// TODO
+
 StructDef: STRUCT ID LBRACE VarDeclList RBRACE
 {
   $$ = A_StructDef($1, $2->id, $4);

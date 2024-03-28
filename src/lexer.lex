@@ -24,11 +24,11 @@ int calc(char *s, int len);
 <INITIAL>"continue" { yylval.pos = A_Pos(line, col); col+=8; return CONTINUE; }
 <INITIAL>"int" { yylval.pos = A_Pos(line, col); col+=3;  return INT; }
 
-<INITIAL>"\t" { yylval.pos = A_Pos(line, col); col+=4; }
-<INITIAL>"\n" { yylval.pos = A_Pos(line, col); ++line; col=1; }
-<COMMENT1>"\n" { yylval.pos = A_Pos(line, col); ++line; col=1; BEGIN INITIAL; }
-<COMMENT2>"\n" { yylval.pos = A_Pos(line, col); ++line; col=1; }
-<INITIAL>" " { yylval.pos = A_Pos(line, col); ++col; }
+<INITIAL>"\t" { col+=4; }
+<INITIAL>"\n" { ++line; col=1; }
+<COMMENT1>"\n" { ++line; col=1; BEGIN INITIAL; }
+<COMMENT2>"\n" { ++line; col=1; }
+<INITIAL>" " { ++col; }
 
 <INITIAL>"+" { yylval.pos = A_Pos(line, col); ++col; return ADD; }
 <INITIAL>"-" { yylval.pos = A_Pos(line, col); ++col; return SUB; }
@@ -83,6 +83,11 @@ int calc(char *s, int len);
     yylval.tokenId = A_TokenId(A_Pos(line, col), strdup(yytext));
     col+=yyleng;
     // printf("ID: %s\n", yytext);
+    // for(int i = 0; i < 200; i++)
+    //     printf("%c", (yytext-50)[i]);
+    // printf("\n");
+    // printf("ID: %p\n", yytext);
+    // *yytext = 0;
     return ID;
 }
 
